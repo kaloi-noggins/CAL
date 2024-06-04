@@ -1,0 +1,12 @@
+Olá professor!
+
+Eu decidi fazer a implementação deste trabalho em outra linguagem que não C.
+Geralmente eu opto por Python, mas, como foi dado um arquivo em C, decidi
+implementar em C++, que possui algumas estruturas já prontas, mas não foge
+muito de C.
+
+Espero que não se importe!
+
+Na pasta solução encontra-se minha solução junto com o print requisitado.
+
+Inclui o arquivo C e o labirinto disponibilizado pelo professor na pasta raiz.

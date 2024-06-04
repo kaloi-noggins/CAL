@@ -1,0 +1,19 @@
+Aluno: Kalyl Henings
+
+
+- Problema: Subsequência Crescente Mais Longa (LIS)
+
+- Subproblema de Estrutura Ótima:
+Para cada posição i na sequência, calcule o tamanho da LIS que termina no elemento i. 
+Ou seja, para cada i, determine o comprimento máximo da subsequência crescente que inclui o elemento 
+arr[i] como o último elemento.
+
+- Implementação Usando Programação Dinâmica
+A ideia é usar uma tabela dp onde dp[i] armazena o comprimento da LIS que termina no elemento arr[i].
+
+- Compilando e testando:
+Para compilar e executar, basta rodar gcc 1.c -o LIS && ./LIS && gcc 1_dp.c -o LIS_DP && ./LIS_DP
+
+- Comparação de velocidade de execução:
+Um print com o resultado está em anexo. A implementação utilizando DP é muito mais eficiente por
+não calcular chamadas recursivas de subproblemas já resolvidos, reutilizando os cálculos ao invés.
