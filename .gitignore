@@ -1,3 +1,4 @@
 # pasta de configurações do vs code
 .vscode
 a.out
+/target
