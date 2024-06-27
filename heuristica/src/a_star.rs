@@ -53,8 +53,10 @@ impl PartialEq for Cell {
 
 impl Eq for Cell {}
 
-fn find_cell(cells: &Vec<Cell>, row_index: i32, col_index: i32) -> Option<&Cell>{
-    cells.iter().find(|&cell| cell.row_index == row_index && cell.col_index == col_index)
+fn find_cell(cells: &Vec<Cell>, row_index: i32, col_index: i32) -> Option<&Cell> {
+    cells
+        .iter()
+        .find(|&cell| cell.row_index == row_index && cell.col_index == col_index)
 }
 
 //======= Funções relacionadas ao A*
@@ -71,7 +73,7 @@ fn heuristic(a: (i32, i32), b: (i32, i32)) -> f64 {
 
 // Checa se a posição está dentro do mapa
 fn is_valid(pos: (i32, i32), row_count: i32, col_count: i32) -> bool {
-    pos.0 > 0 && pos.0 < row_count && pos.1 > 0 && pos.1 < col_count
+    pos.0 >= 0 && pos.0 < row_count && pos.1 >= 0 && pos.1 < col_count
 }
 
 // Checa se a posição informada está bloqueada (1 é tratado como digito)
@@ -88,12 +90,12 @@ fn is_blocked(pos: (i32, i32), map: &Vec<Vec<i32>>) -> bool {
 fn build_path(current_node: Cell, closed_list: &Vec<Cell>) -> Vec<(i32, i32)> {
     let mut current_node = current_node;
     // Declara o vetor com o caminho
-    let mut path:Vec<(i32,i32)> = Vec::new();
+    let mut path: Vec<(i32, i32)> = Vec::new();
     // Insere o destino no caminho
-    path.push((current_node.row_index,current_node.col_index));
+    path.push((current_node.row_index, current_node.col_index));
 
-    while let Some(parent) = current_node.parent_coord  {
-        path.push((parent.0,parent.1));
+    while let Some(parent) = current_node.parent_coord {
+        path.push((parent.0, parent.1));
         match find_cell(&closed_list, parent.0, parent.1) {
             Some(cell) => current_node = cell.clone(),
             None => break,
@@ -110,15 +112,18 @@ fn build_path(current_node: Cell, closed_list: &Vec<Cell>) -> Vec<(i32, i32)> {
 // coordenadas para serem inseridos na lista aberta
 fn get_neighbors(current_cell: &Cell, map: &Vec<Vec<i32>>) -> Vec<(i32, i32)> {
     // Direções para procura
-    let directions: Vec<(i32,i32)> = vec![(0,1),(1,0),(0,-1),(-1,0)];
+    let directions: Vec<(i32, i32)> = vec![(0, 1), (1, 0), (0, -1), (-1, 0)];
     // Lista de coodernads a serem exploradas
-    let mut neighbors: Vec<(i32,i32)> = Vec::new();
-    
-    for (delta_row,delta_col) in directions {
-        let pos = (current_cell.row_index + delta_row,current_cell.col_index+delta_col);
+    let mut neighbors: Vec<(i32, i32)> = Vec::new();
+
+    for (delta_row, delta_col) in directions {
+        let pos = (
+            current_cell.row_index + delta_row,
+            current_cell.col_index + delta_col,
+        );
         let row_count: i32 = map.len() as i32;
         let col_count: i32 = map[0].len() as i32;
-        if is_valid(pos, row_count, col_count) && !is_blocked(pos, map){
+        if is_valid(pos, row_count, col_count) && !is_blocked(pos, map) {
             neighbors.push(pos);
         }
     }
@@ -164,22 +169,35 @@ pub fn a_star_search(
         }
 
         for neighbor in get_neighbors(&current_cell, map) {
-            if closed_list.iter().any(|cell| cell.row_index == neighbor.0 && cell.col_index == neighbor.1) {
+            if closed_list
+                .iter()
+                .any(|cell| cell.row_index == neighbor.0 && cell.col_index == neighbor.1)
+            {
                 continue;
             }
 
             let tentative_g = current_cell.g + 1.0;
-            let existing_neighbor = open_list.iter_mut().find(|cell| cell.row_index == neighbor.0 && cell.col_index == neighbor.1);
+            let existing_neighbor = open_list
+                .iter_mut()
+                .find(|cell| cell.row_index == neighbor.0 && cell.col_index == neighbor.1);
 
             if let Some(neighbor_cell) = existing_neighbor {
                 if tentative_g < neighbor_cell.g {
                     neighbor_cell.g = tentative_g;
                     neighbor_cell.f = neighbor_cell.g + neighbor_cell.h;
-                    neighbor_cell.parent_coord = Some((current_cell.row_index, current_cell.col_index));
+                    neighbor_cell.parent_coord =
+                        Some((current_cell.row_index, current_cell.col_index));
                 }
             } else {
                 let h = heuristic(neighbor, des);
-                let new_cell = Cell::new(neighbor.0, neighbor.1, tentative_g + h, tentative_g, h, Some((current_cell.row_index, current_cell.col_index)));
+                let new_cell = Cell::new(
+                    neighbor.0,
+                    neighbor.1,
+                    tentative_g + h,
+                    tentative_g,
+                    h,
+                    Some((current_cell.row_index, current_cell.col_index)),
+                );
                 open_list.push(new_cell);
             }
         }
